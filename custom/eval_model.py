@@ -28,7 +28,7 @@ def eval_model() -> None:
     with torch.no_grad():
         model.eval()
         for index, row in tqdm(df.iterrows(), total=len(df)):
-            prompt = get_prompt(row["model_input"], row["statement"])
+            prompt = get_prompt(row["model_input"], row["top_topic"])
             input_ids = tokenizer(prompt, return_tensors="pt").to("cuda")
             output = tokenizer.decode(
                 model.generate(**input_ids, max_new_tokens=10)[0],
