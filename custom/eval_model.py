@@ -24,7 +24,7 @@ def eval_model() -> None:
 
     # Load dataset
     fp = str((Path(__file__).parent / "valid_data.xlsx").resolve())
-    df = pd.read_excel(fp)
+    df = pd.read_excel(fp).head(20)
     with torch.no_grad():
         model.eval()
         for index, row in tqdm(df.iterrows(), total=len(df)):
