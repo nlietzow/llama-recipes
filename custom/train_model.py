@@ -96,10 +96,3 @@ def run_training() -> str:
     tokenizer.save_pretrained(str(MERGED_MODEL_DIR.resolve()))
 
     return str(OUTPUT_DIR.resolve())
-
-
-if __name__ == '__main__':
-    from huggingface_hub import login
-
-    login()
-    run_training()

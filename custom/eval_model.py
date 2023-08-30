@@ -9,8 +9,6 @@ from transformers import LlamaForCausalLM, LlamaTokenizer
 from custom.prompts import get_prompt
 from custom.train_model import MODEL_DIR
 
-BASE_DIR = Path(__file__).parent
-
 
 def eval_model() -> None:
     # Load base model
@@ -26,7 +24,7 @@ def eval_model() -> None:
     model = model.merge_and_unload()
 
     # Load dataset
-    fp = str((BASE_DIR / "valid_data.xlsx").resolve())
+    fp = str((Path(__file__).parent / "valid_data.xlsx").resolve())
     df = pd.read_excel(fp)
     with torch.no_grad():
         model.eval()
@@ -40,10 +38,3 @@ def eval_model() -> None:
             df.at[index, "llama-prediction"] = output
 
     df.to_excel(fp, index=False)
-
-
-if __name__ == "__main__":
-    from huggingface_hub import login
-
-    login()
-    eval_model()

@@ -7,11 +7,9 @@ from transformers import LlamaTokenizer
 from custom.prompts import get_prompt
 from ft_datasets.utils import Concatenator
 
-BASE_DIR = Path(__file__).parent
-
 
 def get_train_dataset(tokenizer: LlamaTokenizer) -> Dataset:
-    df = pd.read_excel(str((BASE_DIR / "train_data.xlsx").resolve()))
+    df = pd.read_excel(str((Path(__file__).parent / "train_data.xlsx").resolve()))
 
     prompts = []
     for index, row in df.iterrows():
