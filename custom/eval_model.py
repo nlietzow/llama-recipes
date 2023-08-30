@@ -1,13 +1,18 @@
+from pathlib import Path
+
 import pandas as pd
 import torch
 from peft import PeftModel
 from tqdm import tqdm
 from transformers import LlamaForCausalLM, LlamaTokenizer
 
-from prompts import get_prompt
+from custom.prompts import get_prompt
+from custom.train_model import MODEL_DIR
+
+BASE_DIR = Path(__file__).parent
 
 
-def eval_model(adapters_name: str = "tmp/llama-output/model") -> None:
+def eval_model() -> None:
     # Load base model
     model_id = "meta-llama/Llama-2-7b-hf"
     tokenizer = LlamaTokenizer.from_pretrained(model_id)
@@ -17,11 +22,12 @@ def eval_model(adapters_name: str = "tmp/llama-output/model") -> None:
         device_map="auto",
         torch_dtype=torch.float16,
     )
-    model = PeftModel.from_pretrained(model, adapters_name)
+    model = PeftModel.from_pretrained(model, str(MODEL_DIR.resolve()))
     model = model.merge_and_unload()
 
     # Load dataset
-    df = pd.read_excel("valid_data.xlsx")
+    fp = str((BASE_DIR / "valid_data.xlsx").resolve())
+    df = pd.read_excel(fp)
     with torch.no_grad():
         model.eval()
         for index, row in tqdm(df.iterrows(), total=len(df)):
@@ -33,7 +39,7 @@ def eval_model(adapters_name: str = "tmp/llama-output/model") -> None:
             )
             df.at[index, "llama-prediction"] = output
 
-    df.to_excel("valid_data.xlsx", index=False)
+    df.to_excel(fp, index=False)
 
 
 if __name__ == "__main__":

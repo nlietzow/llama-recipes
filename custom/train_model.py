@@ -1,3 +1,4 @@
+import pathlib
 from contextlib import nullcontext
 
 import torch
@@ -15,7 +16,12 @@ from transformers import (
     TrainingArguments,
 )
 
-from make_datasets import get_train_dataset
+from custom.make_datasets import get_train_dataset
+
+OUTPUT_DIR = pathlib.Path(__file__).parent.parent / "llama-output"
+LOG_DIR = OUTPUT_DIR / "logs"
+MODEL_DIR = OUTPUT_DIR / "model"
+MERGED_MODEL_DIR = OUTPUT_DIR / "merged_model"
 
 
 def run_training() -> str:
@@ -48,7 +54,6 @@ def run_training() -> str:
     train_data = get_train_dataset(tokenizer)
 
     # Define train config
-    output_dir = "tmp/llama-output"
     config = {
         "learning_rate": 1e-4,
         "num_train_epochs": 1,
@@ -57,10 +62,10 @@ def run_training() -> str:
         "gradient_checkpointing": False,
     }
     training_args = TrainingArguments(
-        output_dir=output_dir,
+        output_dir=str(OUTPUT_DIR.resolve()),
         overwrite_output_dir=True,
         bf16=True,
-        logging_dir=f"{output_dir}/logs",
+        logging_dir=str(LOG_DIR.resolve()),
         logging_strategy="steps",
         logging_steps=10,
         save_strategy="no",
@@ -82,17 +87,15 @@ def run_training() -> str:
         trainer.train()
 
     # Save model
-    model_dir = f"{output_dir}/model"
-    model.save_pretrained(model_dir)
-    tokenizer.save_pretrained(model_dir)
+    model.save_pretrained(str(MODEL_DIR.resolve()))
+    tokenizer.save_pretrained(str(MODEL_DIR.resolve()))
 
     # Save merged model
-    merged_model_dir = f"{output_dir}/merged_model"
     model = model.merge_and_unload()
-    model.save_pretrained(merged_model_dir)
-    tokenizer.save_pretrained(merged_model_dir)
+    model.save_pretrained(str(MERGED_MODEL_DIR.resolve()))
+    tokenizer.save_pretrained(str(MERGED_MODEL_DIR.resolve()))
 
-    return output_dir
+    return str(OUTPUT_DIR.resolve())
 
 
 if __name__ == '__main__':
