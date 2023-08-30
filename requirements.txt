@@ -14,3 +14,6 @@ sentencepiece
 py7zr
 scipy
 optimum
+pandas
+openpyxl
+tqdm
