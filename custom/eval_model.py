@@ -4,7 +4,7 @@ from peft import PeftModel
 from tqdm import tqdm
 from transformers import LlamaForCausalLM, LlamaTokenizer
 
-from custom.prompts import get_prompt
+from prompts import get_prompt
 
 
 def eval_model(adapters_name: str = "tmp/llama-output/model") -> None:

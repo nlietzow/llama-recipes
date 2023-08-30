@@ -1,7 +1,7 @@
 import pandas as pd
 from datasets import Dataset
 
-from custom.prompts import get_prompt
+from prompts import get_prompt
 from ft_datasets.utils import Concatenator
 from transformers import LlamaTokenizer
 
