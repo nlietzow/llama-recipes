@@ -7,7 +7,7 @@ sys.path.append(str(Path(__file__).parent))
 sys.path.append(str(Path(__file__).parent.parent))
 
 if __name__ == '__main__':
-    from custom.train_model import run_training
+    from custom.eval_model import eval_model
 
     login()
-    run_training()
+    eval_model()
