@@ -21,7 +21,6 @@ def eval_model() -> None:
         torch_dtype=torch.float16,
     )
     model = PeftModel.from_pretrained(model, str(MODEL_DIR.resolve()))
-    model = model.merge_and_unload()
 
     # Load dataset
     fp = str((Path(__file__).parent / "valid_data.xlsx").resolve())
