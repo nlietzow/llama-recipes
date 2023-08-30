@@ -15,7 +15,7 @@ from transformers import (
     TrainingArguments,
 )
 
-from .make_datasets import get_train_dataset
+from make_datasets import get_train_dataset
 
 
 def run_training() -> str:
