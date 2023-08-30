@@ -16,15 +16,15 @@ def get_train_dataset(tokenizer: LlamaTokenizer) -> Dataset:
         prompts.append(
             get_prompt(
                 row["model_input"],
-                row["statement"],
-                row["prediction"],
+                row["top_topic"],
+                str(row["prediction"]),
                 tokenizer.eos_token,
             )
         )
 
     dataset = Dataset.from_dict({"prompt": prompts})
     dataset = dataset.map(
-        lambda sample: tokenizer(sample["text"]),
+        lambda sample: tokenizer(sample["prompt"]),
         batched=True,
         remove_columns=list(dataset.features),
     ).map(
